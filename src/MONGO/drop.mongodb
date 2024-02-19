@@ -1,0 +1,3 @@
+use("project_mongo_part")
+
+db.users.drop()

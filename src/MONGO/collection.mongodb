@@ -1,0 +1,72 @@
+use("project_mongo_part")
+
+db.createCollection('egresados',{
+    validator:{
+        $jsonSchema:{
+            bsonType:'object',
+            required:['name'],
+            additionalProperties:false,
+            propierties:{
+                name:{
+                    bsonType:'string',
+                    minItems: 1,
+                    uniqueItems:true,
+                },
+                edad:{
+                    bsonType:'number'    
+                },
+                estado:{
+                    enum:['Activo','Inactivo']    
+                },
+                genero:{
+                    enum:['male','female']    
+                },
+                sede:{
+                    enum:['Bogota','Medellin','La Paz']    
+                },
+                facultad:{
+                    bsonType:'string'    
+                },
+                departamento:{
+                    bsonType:'string'    
+                },
+                departamento:{
+                    bsonType:'string'    
+                },
+            } 
+        }
+    }
+})
+
+db.createCollection('publicaciones',{
+    validator:{
+        $jsonSchema:{
+            bsonType:'object',
+            required:['egresado','descripcion','ano_publicacion'],
+            additionalProperties:false,
+            propierties:{
+                egresado:{
+                    bsonType:'string'    
+                },
+                tipo:{
+                    enum:['Cientifico','articulo','citacion']   
+                },
+                institucion:{
+                    bsonType:'string'    
+                },
+                revista:{
+                    bsonType:'string'    
+                },
+                ano_publicacion:{
+                    bsonType:'date'    
+                },
+                descripcion:{
+                    bsonType:'string'    
+                },
+                origen:{
+                    enum:['Nacional','Internacional']
+                },
+            } 
+        }
+    }
+})

@@ -1,0 +1,21 @@
+use("project_mongo_part")
+
+db.egresados.insertOne({
+    egresado: "",
+    tipo: "",
+    institucion:"",
+    revista:"",
+    ano_publicacion:'',
+    descripcion:"",
+    origen:""
+})
+
+db.publicaciones.insertOne({
+    egresado:"",
+    tipo:"",
+    institucion:"",
+    revista:"",
+    ano_publicacion:"",
+    descripcion:"",
+    origen:"",
+})
