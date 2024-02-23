@@ -4,34 +4,56 @@ db.createCollection('egresados',{
     validator:{
         $jsonSchema:{
             bsonType:'object',
-            required:['name'],
+            required:['egresado_id','cargo'],
             additionalProperties:false,
-            propierties:{
-                name:{
-                    bsonType:'string',
+            properties:{
+                egresado_id:{
+                    bsonType:'number',
                     minItems: 1,
                     uniqueItems:true,
                 },
-                edad:{
-                    bsonType:'number'    
+                egresado_names:{
+                    bsonType:'string',
+                    minItems: 1,
                 },
-                estado:{
-                    enum:['Activo','Inactivo']    
+                egresado_firstlastname:{
+                    bsonType:'string'    
                 },
-                genero:{
+                egresado_secondlastname:{
+                    bsonType:'string' 
+                },
+                egresado_gender:{
                     enum:['male','female']    
                 },
-                sede:{
-                    enum:['Bogota','Medellin','La Paz']    
+                egresado_etnicgroup:{
+                    bsonType:'string' 
                 },
-                facultad:{
+                egresado_cellphone:{
+                    bsonType:'number'    
+                },
+                egresado_address:{
                     bsonType:'string'    
                 },
-                departamento:{
+                egresado_emailaddress:{
                     bsonType:'string'    
                 },
-                departamento:{
-                    bsonType:'string'    
+                egresado_edad:{
+                    bsonType:'number'    
+                },
+                cargo:{
+                        bsonType:'object',
+                        additionalProperties:false,
+                        properties:{ 
+                            cargo_id:{
+                                bsonType:'number'    
+                            }, 
+                            cargo_nombre:{
+                                bsonType:'string'    
+                            },
+                            cargo_sectorlaboral:{
+                                bsonType:'string'    
+                            },
+                        } 
                 },
             } 
         }
@@ -42,29 +64,141 @@ db.createCollection('publicaciones',{
     validator:{
         $jsonSchema:{
             bsonType:'object',
-            required:['egresado','descripcion','ano_publicacion'],
+            required:['egresado_id','publicacion_id','descripcion','ano_publicacion'],
             additionalProperties:false,
-            propierties:{
-                egresado:{
-                    bsonType:'string'    
+            properties:{
+                egresado_id:{
+                    bsonType:'number',
+                    minItems: 1,
                 },
-                tipo:{
+                publicacion_id:{
+                    bsonType:'number',
+                    minItems: 1,
+                    uniqueItems:true,
+                },
+                tipo_publicacion:{
                     enum:['Cientifico','articulo','citacion']   
                 },
-                institucion:{
-                    bsonType:'string'    
-                },
-                revista:{
+                descripcion:{
                     bsonType:'string'    
                 },
                 ano_publicacion:{
                     bsonType:'date'    
                 },
-                descripcion:{
-                    bsonType:'string'    
+                institucion:{
+                        bsonType:'object',
+                        additionalProperties:false,
+                        properties:{ 
+                            institucion_id:{
+                                bsonType:'number'    
+                            }, 
+                            institucion_nombre:{
+                                bsonType:'string'    
+                            },
+                    }
                 },
-                origen:{
-                    enum:['Nacional','Internacional']
+                revista:{
+                        bsonType:'object',
+                        additionalProperties:false,
+                        properties:{  
+                            revista_id:{
+                                bsonType:'number'    
+                            },
+                            revista_nombre:{
+                                bsonType:'string'    
+                            },
+                    }
+                },
+            } 
+        }
+    }
+})
+
+db.createCollection('graduaciones_collection',{
+    validator:{
+        $jsonSchema:{
+            bsonType:'object',
+            required:['egresado','descripcion','ano_publicacion'],
+            additionalProperties:false,
+            properties:{
+                egresado_id:{
+                    bsonType:'number',
+                    minItems: 1,
+                },
+                date_graduation:{
+                    bsonType:'date',
+                },
+                sede:{
+                    bsonType:'object',
+                    additionalProperties:false,
+                    properties:{  
+                        departamento:{
+                            bsonType:'object',
+                            additionalProperties:false,
+                            properties:{  
+                                facultad:{
+                                    bsonType:'object',
+                                    additionalProperties:false,
+                                    properties:{  
+                                        programa:{
+                                            bsonType:'object',
+                                            additionalProperties:false,
+                                            properties:{  
+                                                programa_id:{
+                                                    bsonType:'number'    
+                                                },
+                                                programa_nombre:{
+                                                    bsonType:'string'    
+                                                },
+                                            }
+                                        },
+                                        facultad_nombre:{
+                                            bsonType:'string'    
+                                        },
+                                        facultad_id:{
+                                            bsonType:'int'    
+                                        },
+                                    }
+                                },
+                                departamento_nombre:{
+                                    bsonType:'string'    
+                                },
+                                departamento_id:{
+                                    bsonType:'int'    
+                                },
+                            }
+                        },
+                        sede_nombre:{
+                            bsonType:'string'    
+                        },
+                        sede_id:{
+                            bsonType:'int'    
+                        },
+                    }
+                },
+            } 
+        }
+    }
+})
+
+db.createCollection('time_collection',{
+    validator:{
+        $jsonSchema:{
+            bsonType:'object',
+            required:['date','dia','mes','ano'],
+            additionalProperties:false,
+            properties:{
+                date:{
+                    bsonType:'date'    
+                },
+                ano:{
+                    bsonType:'number'   
+                },
+                mes:{
+                    enum:[1,2,3,4,5,6,7,8,9,10,11,12]   
+                },
+                dia:{
+                    bsonType:'number'   
                 },
             } 
         }
