@@ -5,55 +5,63 @@ USE project;
 -- Entidades
 
 Create table egresado(
-       egresado_name VARCHAR(10),
+       egresado_names VARCHAR(10),
+       egresado_firstlastname VARCHAR(10),
+	   egresado_secondlastname VARCHAR(10),
        egresado_gender VARCHAR(10),
+       egresado_etnicgroup VARCHAR(10),
+	   egresado_cellphone int,
+       egresado_address VARCHAR(20),
+	   egresado_emailaddress VARCHAR(20),
        egresado_edad int,
-       fecha_egreso date,
-       egresado_estado VARCHAR(10),
-       CONSTRAINT egresado_estados CHECK (egresado_estado IN ('Activo', 'Inactivo')),
+       CONSTRAINT egresado_etnicgroup CHECK (egresado_etnicgroup IN ('Activo', 'Inactivo')),
        egresado_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
-("Marcos","male",'2004-01-21',003)
 
 Create table Sede_universidad(
        sede_nombre VARCHAR(10),
        sede_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
+Create table Empresa(
+       empresa_nombre VARCHAR(10),
+       empresa_origen VARCHAR(20),
+       empresa_id int primary key
+)
+
+
 
 Create table Cargos(
        cargo_nombre VARCHAR(10),
        cargo_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
+
+Create table programa(
+       programa_nombre VARCHAR(10),
+       programa_nivelacademico VARCHAR(10),
+       CONSTRAINT programa_nivelacademico CHECK (programa_nivelacademico IN ('Pregrado', 'Posgrado')),
+       programa_id int primary key
+)
+
+
 
 Create table facultad(
        facultad_nombre VARCHAR(10),
        facultad_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table departamento(
        departamento_nombre VARCHAR(10),
        departamento_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table publicacion(
        tipo_publicacion VARCHAR(10),
@@ -62,41 +70,43 @@ Create table publicacion(
        publicacion_id int primary key
 )
     
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table institucion(
        institucion_nombre VARCHAR(10),
        institucion_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table revista(
        revista_nombre VARCHAR(10),
        revista_id int primary key
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 -- Relaciones
 
-Create table egresado_facultad (
+Create table egresado_programa (
        egresado_id int,
-       facultad_id int,
+       programa_id int,
        registration_id int primary key,
        FOREIGN Key (egresado_id) References egresado(egresado_id),
+       FOREIGN Key (programa_id) References programa(programa_id)
+)
+
+
+
+Create table programa_facultad (
+       programa_id int,
+       facultad_id int,
+       registration_id int primary key,
+       FOREIGN Key (programa_id) References programa(programa_id),
        FOREIGN Key (facultad_id) References facultad(facultad_id)
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table facultad_departamento (
 	   facultad_id int,
@@ -105,9 +115,7 @@ Create table facultad_departamento (
        FOREIGN Key (departamento_id) References departamento(departamento_id)
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table publicaciones_egresado (
 	   publicacion_id int,
@@ -117,11 +125,7 @@ Create table publicaciones_egresado (
        FOREIGN Key (egresado_id) References egresado(egresado_id)
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
 
-select * from publicacion
 
 Create table cargos_egresado (
 	   cargo_id int,
@@ -133,10 +137,13 @@ Create table cargos_egresado (
        FOREIGN Key (egresado_id) References egresado(egresado_id)
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
-
+Create table cargos_empresa (
+	   cargo_id int,
+       empresa_id int,
+       registration_id int primary key,
+	   FOREIGN Key (cargo_id) References cargos(cargo_id),
+       FOREIGN Key (empresa_id) References empresa(empresa_id)
+)
 
 Create table egresado_sede (
        egresado_id int,
@@ -146,9 +153,7 @@ Create table egresado_sede (
 	   FOREIGN Key (sede_id) References sede_universidad(sede_id)       
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table publicacion_institucion (
        publicacion_id int,
@@ -158,9 +163,7 @@ Create table publicacion_institucion (
 	   FOREIGN Key (institucion_id) References institucion(institucion_id)       
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
+
 
 Create table publicacion_revista (
        publicacion_id int,
@@ -170,6 +173,3 @@ Create table publicacion_revista (
 	   FOREIGN Key (revista_id) References revista(revista_id)       
 )
 
-Insert student(student_name,student_gender,student_DateBirth,student_id) Values 
-("Demetrio","male",'2002-01-21',001),
-("Maria","female",'2002-01-21',002),
