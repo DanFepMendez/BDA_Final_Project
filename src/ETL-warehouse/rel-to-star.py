@@ -31,7 +31,7 @@ db_host = "localhost"
 s_db_name = "project_test"
 d_db_name = "project_star_model"
 db_user = "root"
-db_pass = "abc123xd"
+db_pass = "Danipau2124"
 
 scx = mysql.connector.connect(
     host=db_host, database=s_db_name, user=db_user, password=db_pass
