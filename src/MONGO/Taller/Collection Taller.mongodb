@@ -1,0 +1,11 @@
+use("restaurante")
+
+db.producto.insertMany([
+    { _id: 7,  "nombre": "Malteada de Macadamia", "precio" : 17000, "existencias" : 50, "categoría" : "Bebida", "ingredientes" : { "helado" : "almendras"}, "descripcion": "Malteada especial que combina variedad de semillas como la almendra, macadamia y maní" },
+    { _id: 8,  "nombre": "Limonada Cherry", "precio" : 5000,"existencias" : 20, "categoría" : "Bebida", "ingredientes" : { "fruta" : "limón"}, "descripcion" : "bebida que combina variedad de cerezas y limon" },
+    { _id: 9,  "nombre": "Especial", "precio" : 35000,"existencias" : 10, "categoría" : "Hamburguesa", "ingredientes" : { "pan" : "común", "salsa" : ["tomate", "mayonesa", "mostaza"],"vegetales" : ["lechuga", "tomate", "cebolla"], "carnes" : ["pollo", "tocineta"]}, "descripcion" : "Hamburguesa especial que combina variedad de carnes como tocineta y pollo"}
+    ]);
+
+db.product.createIndex ({decripcion:"text"})
+
+db.producto.find().pretty()

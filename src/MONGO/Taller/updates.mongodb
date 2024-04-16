@@ -1,0 +1,24 @@
+use("restaurante")
+
+db.producto.update(
+    { "nombre": "BigBurger"},
+      { "$set": { precio: 35000 } },
+    { multi: true }
+)
+
+db.producto.update(
+    { "nombre": { "$regex": "^M" } },
+    { "$set": { "categoría": "Malteada" } },
+    { multi: true })
+
+db.producto.update(
+        { "categoría":"Hamburguesa"},
+        { "$inc": {"precio": 8000 } },
+        { multi: true })
+
+db.producto.update(
+        { "_id": 3},
+        { $pull: {"ingredientes.salsa": "tomate"} },
+        { multi: true })
+
+db.producto.find({_id:3}).pretty()

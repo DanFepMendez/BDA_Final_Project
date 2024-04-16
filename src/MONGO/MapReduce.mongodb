@@ -1,0 +1,93 @@
+use("fhiudshfihdsf")
+
+var mapFunction1 = function() {
+    emit(this.empresa_id.empresa_nombre,this._id );
+};
+
+var reduceFunction1 = function(keyCustId, valuesPrices) {
+    return Array.sum(valuesPrices);
+};
+
+ db.contrataciones.mapReduce(
+    mapFunction1,
+    reduceFunction1,
+    { out: "map_reduce_example" }
+ )
+
+ //db.map_reduce_example.find().sort( { _id: 1 } )
+
+ var mapFunction2 = function() {
+    ///for (var idx = 0; idx < this._id.length; idx++) {
+       var key = this.empresa_id.empresa_origen;
+       var value = {count: 1};
+       emit(key, value);
+    ///}
+};
+
+var reduceFunction2 = function(key, countObjVals) {
+    //reducedVal = { count: 0 };
+    //for (var idx = 0; idx < countObjVals.length; idx++) {
+    //    reducedVal.count += countObjVals[idx].count;
+    //}
+    //return reducedVal;
+    var reducedVal = { count: 0 };
+    countObjVals.forEach(function(value) {
+        reducedVal.count += value.count;
+    });
+    return reducedVal;
+ };
+
+ db.contrataciones.mapReduce(
+    mapFunction2,
+    reduceFunction2,
+    {
+      out: { merge: "map_reduce_example2" }
+    }
+  );
+
+//db.map_reduce_example2.find().sort( { _id: 1 } )
+
+
+var mapFunction3 = function() {
+       var key = this.empresa_id.empresa_nombre;
+       var value = {count: 1};
+       emit(key, value);
+    ///}
+};
+
+var reduceFunction3 = function(key, countObjVals) {
+    var reducedVal = { count: 0 };
+    countObjVals.forEach(function(value) {
+        reducedVal.count += value.count;
+    });
+    return reducedVal;
+ };
+
+ db.contrataciones.mapReduce(
+    mapFunction3,
+    reduceFunction3,
+    {
+      out: { merge: "map_reduce_example3" }
+    }
+  );
+
+//db.map_reduce_example3.find({"_id":"HODGES LLC"}).sort( { _id: 1 } )
+
+var mapFunction4 = function() {
+    var year = this.date_id.getFullYear(); 
+    emit(year, 1); 
+};
+
+var reduceFunction4 = function(key, values) {
+    return Array.sum(values); 
+};
+
+db.contrataciones.mapReduce(
+    mapFunction4,
+    reduceFunction4,
+    {
+        out: { merge: "map_reduce_example4" } 
+        }
+);
+
+db.map_reduce_example4.find().sort( { _id: 1 } )

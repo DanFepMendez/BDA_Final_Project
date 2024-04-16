@@ -1,0 +1,19 @@
+use("restaurante")
+
+db.producto.update(
+    { "ingredientes.helado":"maracuya"},
+    { "$inc": {"precio": 1000 } },
+    { multi: true })
+
+db.producto.update(
+    { "_id": 2},
+    { "$inc": {"existencias": -10 } },
+    { multi: true })
+
+db.producto.updateMany(
+    { "categoría":"Hamburguesa","ingredientes.vegetales": "cebolla" }, 
+    { $set: { "ingredientes.vegetales.$[elem]": "pepinillos" }}, 
+    { arrayFilters: [{ "elem": "cebolla" }] })
+
+db.producto.find().pretty()
+db.producto.find({ "_id": 7}).pretty()
