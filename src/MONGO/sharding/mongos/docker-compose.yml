@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+  mongos:
+    container_name: mongos
+    image: mongo:latest
+    ports:
+      - 11111:27017
+    command: mongos --configdb config_rs/host.docker.internal:10001,host.docker.internal:10002,host.docker.internal:10003 --port 27017 --bind_ip_all
