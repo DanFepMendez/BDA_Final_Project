@@ -39,3 +39,19 @@ rs.initiate(
 )
 
 sh.addShard( "shard2_rs/host.docker.internal:27018")
+
+// Crear zonas
+
+sh.addShardToZone("shard1_rs", "A")
+sh.addShardToZone("shard2_rs", "B")
+
+sh.updateZoneKeyRange("project_test.cargos", {cargo_nombre: MinKey()}, {cargo_nombre: "N"}, "A")
+sh.updateZoneKeyRange("project_test.cargos", {cargo_nombre: "N"}, {cargo_nombre: MaxKey()}, "B")
+
+sh.removeRangeFromZone("project_test.cargos", {cargo_nombre: MinKey()}, {cargo_nombre: "N"})
+sh.removeRangeFromZone("project_test.cargos", {cargo_nombre: "N"}, {cargo_nombre: MaxKey()})
+
+sh.shardCollection("project_test.time_", {month_: 1})
+
+sh.updateZoneKeyRange("project_test.time_", {month_: 1}, {month_: 7}, "A")
+sh.updateZoneKeyRange("project_test.time_", {month_: 7}, {month_: MaxKey()}, "B")
