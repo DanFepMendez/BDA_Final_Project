@@ -1,9 +1,0 @@
-use("restaurante")
-
-db.producto.deleteOne({"_id": 3})
-
-db.producto.deleteMany({"ingredientes.vegetales": "pepinillos"})
-
-db.producto.deleteMany({"precio": {$lt:20000}})
-
-db.producto.find({"_id": 3}).pretty()

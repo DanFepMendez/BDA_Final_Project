@@ -1,3 +1,0 @@
-use("restaurante")
-
-db.users.drop()

@@ -5,8 +5,8 @@ rs.initiate({
   members: [
     { _id: 0, host: "host.docker.internal:10001" },
     { _id: 1, host: "host.docker.internal:10002" },
-    { _id: 2, host: "host.docker.internal:10003" }
-  ]
+    { _id: 2, host: "host.docker.internal:10003" },
+  ],
 })
 
 // Initiate shard replica set
