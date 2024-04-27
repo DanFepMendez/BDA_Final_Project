@@ -1,4 +1,4 @@
-use("fhiudshfihdsf")
+use("project_test")
 
 var mapFunction1 = function() {
     emit(this.empresa_id.empresa_nombre,this._id );
