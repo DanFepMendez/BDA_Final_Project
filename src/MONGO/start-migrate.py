@@ -205,8 +205,7 @@ try:
             if row_rp is None:
             
             else:
-                
-                for idx, x in enumerate(row_rp)
+                for idx, x in enumerate(row_rp):
                 
                     for k in slave_table:
 
