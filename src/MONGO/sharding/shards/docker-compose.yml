@@ -7,8 +7,6 @@ services:
     ports:
       - 10101:27017
     command: mongod --shardsvr --replSet shard1_rs --dbpath /data/db --port 27017
-    volumes:
-      - ./shardsvr1_1:/data/db
 
   shardsvr1_2:
     container_name: shardsvr1_2
@@ -16,8 +14,6 @@ services:
     ports:
       - 10102:27017
     command: mongod --shardsvr --replSet shard1_rs --dbpath /data/db --port 27017
-    volumes:
-      - ./shardsvr1_2:/data/db
 
   shardsvr1_3:
     container_name: shardsvr1_3
@@ -25,5 +21,3 @@ services:
     ports:
       - 10103:27017
     command: mongod --shardsvr --replSet shard1_rs --dbpath /data/db --port 27017
-    volumes:
-      - ./shardsvr1_3:/data/db

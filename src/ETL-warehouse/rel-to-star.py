@@ -30,8 +30,8 @@ def exec_sql_file(cursor, sql_file):
 db_host = "localhost"
 s_db_name = "project_test"
 d_db_name = "project_star_model"
-db_user = "root"
-db_pass = "Danipau2124"
+db_user = "local_user"
+db_pass = "abc123"
 
 scx = mysql.connector.connect(
     host=db_host, database=s_db_name, user=db_user, password=db_pass

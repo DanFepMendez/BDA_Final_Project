@@ -1,3 +1,11 @@
+src/MONGO/sharding/config_servers/configsvr1
+src/MONGO/sharding/config_servers/configsvr2
+src/MONGO/sharding/config_servers/configsvr3
+src/MONGO/sharding/shards/shardsvr1_1
+src/MONGO/sharding/shards/shardsvr1_2
+src/MONGO/sharding/shards/shardsvr1_3
+mongo_data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
