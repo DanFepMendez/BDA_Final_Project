@@ -6,6 +6,7 @@ import json
 import bz2
 import os
 import pymongo
+import numpy.ma as ma
 import pandas as pd
 import nltk
 from nltk.corpus import stopwords
@@ -114,6 +115,11 @@ def get_RelatedDocs_data():
         type: int
         required: false
         description: La página de resultados
+      - name: order
+        in: query
+        type: string
+        required: false
+        description: Orden resultados
     responses:
       200:
         description: Datos obtenidos correctamente
@@ -124,14 +130,27 @@ def get_RelatedDocs_data():
     # Definir la URL del servicio con el token incluido
       query = request.args.get('query')
       currentPage = request.args.get('page', default=1, type=int)
+      order = request.args.get('order', default='Date.DESC')
       RESULTS_PER_PAGE = 10
 
+      if order not in ['Date.DESC', 'Date.ASC', 'Sim.DESC', 'Sim.ASC']:
+        order = 'Date.DESC'
+      
+      orderType = 'date_id' if order.split('.')[0] == 'Date' else 'similitud' if order.split('.')[0] == 'Sim' else 'date_id'
+      orderDir = pymongo.DESCENDING if order.split('.')[1] == 'DESC' else pymongo.ASCENDING if order.split('.')[1] == 'ASC' else pymongo.DESCENDING
 
       if not query:
-        results = df.iloc[(currentPage-1)*RESULTS_PER_PAGE:currentPage*RESULTS_PER_PAGE]["idx"].values.tolist()
+        if orderDir == pymongo.DESCENDING:
+          results = df.iloc[(currentPage-1)*RESULTS_PER_PAGE:currentPage*RESULTS_PER_PAGE]["idx"].values.tolist()
+        elif orderDir == pymongo.ASCENDING:
+          if currentPage > 1:
+            results = df.iloc[-currentPage*RESULTS_PER_PAGE:-(currentPage-1)*RESULTS_PER_PAGE]["idx"].values.tolist()
+          else:
+            results = df.iloc[-RESULTS_PER_PAGE:]["idx"].values.tolist()
+          
         data = []
-        
-        for doc in mydb['registro_publicaciones'].find({'publicacion_id.publicacion_id': {'$in': results}},{'_id': 0}).sort([("data_id", pymongo.DESCENDING)]):
+
+        for doc in mydb['registro_publicaciones'].find({'publicacion_id.publicacion_id': {'$in': results}},{'_id': 0}).sort([(orderType, orderDir)]):
           data.append(fromDocToResult(doc))
         
         return jsonify(data)
@@ -146,13 +165,35 @@ def get_RelatedDocs_data():
 
       cosineSimilarities = cosine_similarity(doc_vector,query_vector).flatten()
 
-      if currentPage == 1:
-        related_docs_indices = cosineSimilarities.argsort()[-RESULTS_PER_PAGE * currentPage:]
-      elif currentPage > 1:
-        related_docs_indices = cosineSimilarities.argsort()[-RESULTS_PER_PAGE * currentPage:-RESULTS_PER_PAGE * (currentPage - 1)]
-        
-      numberResults = (cosineSimilarities > 0).sum()
+      numberResults = (cosineSimilarities > 0.1).sum()
       print("Number results: ", numberResults)
+
+      # Acá empeizan los filtros (?
+      # if orderType == 'date_id':
+      #   return 'D:'
+
+      # sim_offset = df.shape[0]-numberResults
+      related_docs_indices = cosineSimilarities.argsort()[-numberResults:]
+      print("Size related docs: ", len(related_docs_indices))
+
+      if (orderType == 'date_id'):
+        related_docs_indices.sort()
+
+      if currentPage == 1:
+        if orderDir == pymongo.DESCENDING:
+          related_docs_indices = related_docs_indices[-RESULTS_PER_PAGE * currentPage:]
+        else:
+          # related_docs_indices = cosineSimilarities.argsort()[sim_offset:RESULTS_PER_PAGE * currentPage + sim_offset]
+          related_docs_indices = related_docs_indices[:RESULTS_PER_PAGE * currentPage]
+      elif currentPage > 1:
+        if orderDir == pymongo.DESCENDING:
+          # related_docs_indices = cosineSimilarities.argsort()[-RESULTS_PER_PAGE * currentPage:-RESULTS_PER_PAGE * (currentPage - 1)]
+          related_docs_indices = related_docs_indices[-RESULTS_PER_PAGE * currentPage: -RESULTS_PER_PAGE * (currentPage - 1)]
+        else:
+          # related_docs_indices = cosineSimilarities.argsort()[RESULTS_PER_PAGE * (currentPage - 1) + sim_offset:RESULTS_PER_PAGE * currentPage + sim_offset]
+          related_docs_indices = related_docs_indices[RESULTS_PER_PAGE * (currentPage - 1):RESULTS_PER_PAGE * currentPage]
+
+      print(related_docs_indices)
 
       data=[]
 
@@ -171,7 +212,7 @@ def get_RelatedDocs_data():
       # print(df.iloc[568]["idx"])
 
       for i in related_docs_indices:
-        if cosineSimilarities[i] == 0:
+        if cosineSimilarities[i] <= 0.1:
           continue
         doc = next(mydb['registro_publicaciones'].find({'publicacion_id.publicacion_id': df.iloc[i]["idx"]}, {'_id': 0}),None)
         if not doc:
@@ -190,7 +231,9 @@ def get_RelatedDocs_data():
         
       # print(df.iloc[related_docs_indices[0]]['descripcion'])
 
-      return jsonify(sorted(data, key=lambda x: x["similitud"], reverse=True)), 200
+      reverse = orderDir == pymongo.DESCENDING if orderType == 'similitud' else orderDir == pymongo.ASCENDING
+
+      return jsonify(sorted(data, key=lambda x: x[orderType], reverse=reverse)), 200
 
     except Exception as e:
           return jsonify({"error": str(e)}), 500
@@ -228,7 +271,7 @@ def get_RelatedDocs_size():
       query_vector = vectorizerX.transform([q])
 
       cosineSimilarities = cosine_similarity(doc_vector,query_vector).flatten()
-      return jsonify({'results_size': int((cosineSimilarities > 0).sum())})
+      return jsonify({'results_size': int((cosineSimilarities > 0.1).sum())})
 
     except Exception as e:
           return jsonify({"error": str(e)}), 500
