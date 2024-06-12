@@ -6,6 +6,8 @@ src/MONGO/sharding/shards/shardsvr1_2
 src/MONGO/sharding/shards/shardsvr1_3
 mongo_data/
 
+node_modules/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
